@@ -64,14 +64,6 @@ jobs:
         GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o bootstrap $MAIN_GO_FILE
         zip main.zip bootstrap
 
-  #package-and-publish:
-  #  runs-on: ubuntu-latest
-  #  needs: [ setup-environment, build, linter ]
-
-  #  steps:
-  #  - name: Zip and move to S3
-  #    run: zip main.zip bootstrap
-
   move-to-s3:
     runs-on: ubuntu-latest
     needs: [ setup-environment, build, linter ]
@@ -98,7 +90,7 @@ jobs:
         
   infra-as-code:
     runs-on: ubuntu-latest
-    needs: [ setup-environment, build, linter, package-and-publish, move-to-s3 ]
+    needs: [ setup-environment, build, linter, move-to-s3 ]
     permissions:
       id-token: write
       contents: read
@@ -131,7 +123,7 @@ jobs:
           
   deploy-dev:
     runs-on: ubuntu-latest
-    needs: [ setup-environment, package-and-publish, infra-as-code ]
+    needs: [ setup-environment, infra-as-code ]
     permissions:
       id-token: write
       contents: read
