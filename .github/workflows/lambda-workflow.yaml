@@ -57,15 +57,6 @@ jobs:
     - name: Install dependencies
       run: go mod tidy
 
-    - name: Debug01 - List Files and Paths
-      run: |
-        echo "Current Directory:"
-        pwd
-        echo "Files in the current directory:"
-        ls -lah
-        echo "Recursive file list:"
-        find . -type f
-
     - name: Build go image
       env:
         MAIN_GO_FILE: ${{ needs.setup-environment.outputs.MAIN_GO_FILE }}
@@ -78,17 +69,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: lambda-image-artifact
-        path: main.zip
+        path: |
+          main.zip
+          collector.yml
         retention-days: 1
 
-    - name: Save collector tmp folder
-      uses: actions/upload-artifact@v4
-      with:
-        name: collect-otel-artifact
-        path: collector.yml
-        retention-days: 1
-
-    - name: Debug02 - List Files and Paths
+    - name: Debug - List Files and Paths
       run: |
         echo "Current Directory:"
         pwd
@@ -102,28 +88,22 @@ jobs:
     needs: [ setup-environment, build, linter ]
 
     steps:
-    - name: Debug03- List Files and Paths
+    - name: Debug- List Files and Paths
       run: |
         echo "Current Directory:"
         pwd
         echo "Files in the current directory:"
         ls -lah
-        echo "Recursive file list:"
-        find . -type f
 
     - name: Retrieve image from tmp folder
       uses: actions/download-artifact@v4
       with:
         name: lambda-image-artifact
-        path: main.zip
+        path: |
+            main.zip
+            collector.yml
 
-    - name: Retrieve collector from tmp folder
-      uses: actions/download-artifact@v4
-      with:
-        name: collect-otel-artifact
-        path: collector.yml
-
-    - name: Debug04 - List Files and Paths
+    - name: Debug - List Files and Paths
       run: |
         echo "Current Directory:"
         pwd
