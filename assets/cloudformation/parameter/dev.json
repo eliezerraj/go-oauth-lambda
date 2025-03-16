@@ -1,0 +1,14 @@
+[
+    {
+      "ParameterKey": "Env",
+      "ParameterValue": "dev"
+    },
+    {
+      "ParameterKey": "ServiceAccountName",
+      "ParameterValue": "sa-go-oauth"
+    },
+    {
+      "ParameterKey": "K8Namespace",
+      "ParameterValue": "test-a"
+    }
+]
