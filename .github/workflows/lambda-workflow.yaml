@@ -69,9 +69,17 @@ jobs:
     - name: Build go image
       env:
         MAIN_GO_FILE: ${{ needs.setup-environment.outputs.MAIN_GO_FILE }}
-      run: |
-        GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o bootstrap $MAIN_GO_FILE
-        zip main.zip bootstrap
+      run: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o bootstrap $MAIN_GO_FILE
+
+    - name: Zip image
+      run: zip main.zip bootstrap
+
+    - name: Save image tmp folder
+      uses: actions/upload-artifact@v4
+      with:
+        name: lambda-image-artifact
+        path: build
+        retention-days: 1
 
     - name: Debug02 - List Files and Paths
       run: |
@@ -87,6 +95,12 @@ jobs:
     needs: [ setup-environment, build, linter ]
 
     steps:
+    - name: Retrieve image from tmp folder
+      uses: actions/download-artifact@v4
+      with:
+        name: lambda-image-artifact
+        path: build
+
     - name: Configure AWS Credentials
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
