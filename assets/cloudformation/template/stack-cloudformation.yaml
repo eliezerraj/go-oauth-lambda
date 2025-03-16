@@ -18,7 +18,7 @@ Parameters:
   FunctionLambdaName:
     Description: Lambda Name
     Type: String
-    Default: go-oauth-apigw-authorizer-lambda
+    Default: go-oauth-lambda
   ApplicationName:
     Type: String
     Default: go-oauth-apigw-authorizer-lambda
@@ -46,7 +46,7 @@ Parameters:
     Default: codepipeline-us-east-2-237656914886
   S3KeyParam:
     Type: String 
-    Default: go-oauth-apigw-authorizer-lambda/main.zip
+    Default: go-oauth-lambda/main.zip
   ManagedPolicyParameterOne:
     Description: Inform policy ARN (opcional)
     Type: String 
