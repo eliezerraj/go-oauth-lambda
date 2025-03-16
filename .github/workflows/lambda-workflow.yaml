@@ -57,18 +57,20 @@ jobs:
     - name: Install dependencies
       run: go mod tidy
 
-    - name: Build image
+    - name: Build go image
       env:
         MAIN_GO_FILE: ${{ needs.setup-environment.outputs.MAIN_GO_FILE }}
-      run: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o bootstrap $MAIN_GO_FILE
+      run: |
+        GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o bootstrap $MAIN_GO_FILE
+        zip main.zip bootstrap
 
-  package-and-publish:
-    runs-on: ubuntu-latest
-    needs: [ setup-environment, build, linter ]
+  #package-and-publish:
+  #  runs-on: ubuntu-latest
+  #  needs: [ setup-environment, build, linter ]
 
-    steps:
-    - name: Zip and move to S3
-      run: zip main.zip bootstrap
+  #  steps:
+  #  - name: Zip and move to S3
+  #    run: zip main.zip bootstrap
 
   move-to-s3:
     runs-on: ubuntu-latest
@@ -96,7 +98,7 @@ jobs:
         
   infra-as-code:
     runs-on: ubuntu-latest
-    needs: [ setup-environment, build, linter, move-to-s3 ]
+    needs: [ setup-environment, build, linter, package-and-publish, move-to-s3 ]
     permissions:
       id-token: write
       contents: read
