@@ -57,12 +57,30 @@ jobs:
     - name: Install dependencies
       run: go mod tidy
 
+    - name: Debug01 - List Files and Paths
+      run: |
+        echo "Current Directory:"
+        pwd
+        echo "Files in the current directory:"
+        ls -lah
+        echo "Recursive file list:"
+        find . -type f
+
     - name: Build go image
       env:
         MAIN_GO_FILE: ${{ needs.setup-environment.outputs.MAIN_GO_FILE }}
       run: |
         GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o bootstrap $MAIN_GO_FILE
         zip main.zip bootstrap
+
+    - name: Debug02 - List Files and Paths
+      run: |
+        echo "Current Directory:"
+        pwd
+        echo "Files in the current directory:"
+        ls -lah
+        echo "Recursive file list:"
+        find . -type f
 
   move-to-s3:
     runs-on: ubuntu-latest
@@ -83,11 +101,20 @@ jobs:
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws-region: ${{ needs.setup-environment.outputs.AWS_REGION }}
 
+    - name: Debug03- List Files and Paths
+      run: |
+        echo "Current Directory:"
+        pwd
+        echo "Files in the current directory:"
+        ls -lah
+        echo "Recursive file list:"
+        find . -type f
+
     - name: Upload collector.yml to S3
       run: |
         aws s3 cp collector.yml ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}/collector.yml
         aws s3 cp main.zip ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}/main.zip
-        
+
   infra-as-code:
     runs-on: ubuntu-latest
     needs: [ setup-environment, build, linter, move-to-s3 ]
