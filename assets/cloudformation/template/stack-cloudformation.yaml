@@ -129,7 +129,7 @@ Resources:
           CRL_FILE_KEY: crl-ca.crl
           SECRET_NAME: 'key-jwt-auth'
           DYNAMO_TABLE_NAME: 'user_login_2'
-          API_VERSION: !Red ApiVersion
+          API_VERSION: !Ref ApiVersion
           MODEL_SIGN: "RSA"
           END: !Ref Env
       Role: 
