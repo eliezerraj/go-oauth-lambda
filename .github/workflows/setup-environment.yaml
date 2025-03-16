@@ -23,9 +23,6 @@ on:
       MAIN_GO_FILE:
         description: 'Main go file path'
         value: ${{ jobs.set-workflow-variables.outputs.MAIN_GO_FILE }}
-      REPO_NAME:
-        description: 'Repository name'
-        value: ${{ jobs.set-workflow-variables.outputs.REPO_NAME }}
       CLOUDFORMATION_TEMPLATE_PATH:
         description: 'CloudFormation template path'
         value: ${{ jobs.set-workflow-variables.outputs.CLOUDFORMATION_TEMPLATE_PATH }}
