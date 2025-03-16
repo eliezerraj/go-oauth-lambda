@@ -98,7 +98,7 @@ jobs:
         
   infra-as-code:
     runs-on: ubuntu-latest
-    needs: [ setup-environment, build, linter, package-and-publish, move-to-s3 ]
+    needs: [ setup-environment, build, linter, move-to-s3 ]
     permissions:
       id-token: write
       contents: read
