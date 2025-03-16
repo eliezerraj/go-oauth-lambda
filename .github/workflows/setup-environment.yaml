@@ -31,7 +31,7 @@ on:
         value: ${{ jobs.set-workflow-variables.outputs.CLOUDFORMATION_TEMPLATE_PARAMETERS_PATH }}
       BUCKET_S3_LAMBDA_DEPLOY:
         description: 'Bucket S3 lambda'
-        value: ${{ jobs.set-workflow-variables.outputs.ENVIRONMENT }}       
+        value: ${{ jobs.set-workflow-variables.outputs.BUCKET_S3_LAMBDA_DEPLOY }}       
       ENVIRONMENT:
         description: 'Environment'
         value: ${{ jobs.set-workflow-variables.outputs.ENVIRONMENT }}
@@ -46,7 +46,7 @@ jobs:
       MAIN_GO_FILE: ${{ steps.main_go_file.outputs.MAIN_GO_FILE }}
       CLOUDFORMATION_TEMPLATE_PATH: ${{ steps.cloudformation_template_path.outputs.CLOUDFORMATION_TEMPLATE_PATH }}
       CLOUDFORMATION_TEMPLATE_PARAMETERS_PATH: ${{ steps.set_variables.outputs.CLOUDFORMATION_TEMPLATE_PARAMETERS_PATH }}
-      BUCKET_S3_LAMBDA_DEPLOY: ${{ steps.set_variables.outputs.ENVIRONMENT }}
+      BUCKET_S3_LAMBDA_DEPLOY: ${{ steps.set_variables.outputs.BUCKET_S3_LAMBDA_DEPLOY }}
       ENVIRONMENT: ${{ steps.set_variables.outputs.ENVIRONMENT }}
 
     steps:
