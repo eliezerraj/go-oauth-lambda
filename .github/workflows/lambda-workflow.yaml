@@ -68,10 +68,10 @@ jobs:
     - name: Save image tmp folder
       uses: actions/upload-artifact@v4
       with:
-        name: lambda-image-artifact
+        name: lambda-artifact
         path: |
-          main.zip
-          collector.yml
+            collector.yml
+            main.zip
         retention-days: 1
 
     - name: Debug - List Files and Paths
@@ -80,28 +80,17 @@ jobs:
         pwd
         echo "Files in the current directory:"
         ls -lah
-        echo "Recursive file list:"
-        find . -type f
 
   move-to-s3:
     runs-on: ubuntu-latest
     needs: [ setup-environment, build, linter ]
 
     steps:
-    - name: Debug- List Files and Paths
-      run: |
-        echo "Current Directory:"
-        pwd
-        echo "Files in the current directory:"
-        ls -lah
-
     - name: Retrieve image from tmp folder
       uses: actions/download-artifact@v4
       with:
-        name: lambda-image-artifact
-        path: |
-            main.zip
-            collector.yml
+        name: lambda-artifact
+        path: build
 
     - name: Debug - List Files and Paths
       run: |
@@ -110,7 +99,7 @@ jobs:
         echo "Files in the current directory:"
         ls -lah
         echo "Recursive file list:"
-        find . -type f
+        ls -R build
 
     - name: Configure AWS Credentials
       env:
@@ -127,10 +116,10 @@ jobs:
         aws-region: ${{ needs.setup-environment.outputs.AWS_REGION }}
 
     - name: Upload collector.yml to S3
-      run: aws s3 cp collector.yml ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}/collector.yml
+      run: aws s3 cp ./build/collector.yml ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}/collector.yml
 
     - name: Upload image to S3
-      run: aws s3 cp main.zip ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}/main.zip
+      run: aws s3 cp ./build/main.zip ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}/main.zip
 
   infra-as-code:
     runs-on: ubuntu-latest
