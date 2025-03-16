@@ -1,0 +1,157 @@
+name: Deploy lambda
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      AWS_ACCOUNT_ID:
+        description: 'AWS account id'
+        required: true
+        default: '992382474575'
+      REGION:
+        description: 'AWS Region'
+        required: true
+        default: 'us-east-2'
+
+env:
+  GO_VERSION: 1.23.3
+
+defaults:
+  run:
+    shell: bash
+    
+jobs:
+  setup-environment:
+    uses: ./.github/workflows/setup-environment.yaml
+    with:
+      AWS_ACCOUNT_ID: ${{ github.event.inputs.AWS_ACCOUNT_ID }}
+      REGION: ${{ github.event.inputs.REGION }}
+
+  linter:
+    runs-on: ubuntu-latest
+    needs: [ setup-environment ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup go environment
+        uses: actions/setup-go@v5.0.2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [ setup-environment ]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup go env
+      uses: actions/setup-go@v5.0.2
+      with:
+        go-version: ${{ env.GO_VERSION }}
+
+    - name: Install dependencies
+      run: go mod tidy
+
+    - name: Build image
+      env:
+        MAIN_GO_FILE: ${{ needs.setup-environment.outputs.MAIN_GO_FILE }}
+      run: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o bootstrap $MAIN_GO_FILE
+
+  package-and-publish:
+    runs-on: ubuntu-latest
+    needs: [ setup-environment, build, linter ]
+
+    steps:
+    - name: Zip and move to S3
+      run: zip main.zip bootstrap
+
+  move-to-s3:
+    runs-on: ubuntu-latest
+    needs: [ setup-environment, build, linter ]
+
+    steps:
+    - name: Configure AWS Credentials
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+        AWS_REGION: ${{ needs.setup-environment.outputs.AWS_REGION }}
+        BUCKET_S3_LAMBDA_DEPLOY: ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: ${{ needs.setup-environment.outputs.AWS_REGION }}
+
+    - name: Upload collector.yml to S3
+      run: |
+        aws s3 cp collector.yml ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}/collector.yml
+        aws s3 cp main.zip ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}/main.zip
+        
+  infra-as-code:
+    runs-on: ubuntu-latest
+    needs: [ setup-environment, build, linter, move-to-s3 ]
+    permissions:
+      id-token: write
+      contents: read
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ needs.setup-environment.outputs.AWS_REGION }}
+
+      - name: Execute Cloudformation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        env:
+          REPO_NAME: ${{ needs.setup-environment.outputs.REPO_NAME }}
+          ENVIRONMENT: ${{ needs.setup-environment.outputs.ENVIRONMENT }}
+          TEMPLATE_PATH: ${{ needs.setup-environment.outputs.CLOUDFORMATION_TEMPLATE_PATH }}
+          TEMPLATE_PARAMETERS_PATH: ${{ needs.setup-environment.outputs.CLOUDFORMATION_TEMPLATE_PARAMETERS_PATH }}
+        with:
+          name: ${{ env.REPO_NAME }}-iaac-stack
+          template: ${{ env.TEMPLATE_PATH }}
+          parameter-overrides: ${{ env.TEMPLATE_PARAMETERS_PATH }}
+          no-fail-on-empty-changeset: "1"
+          capabilities: CAPABILITY_AUTO_EXPAND,CAPABILITY_NAMED_IAM
+          
+  deploy-dev:
+    runs-on: ubuntu-latest
+    needs: [ setup-environment, package-and-publish, infra-as-code ]
+    permissions:
+      id-token: write
+      contents: read
+    if: github.ref == 'refs/heads/main' 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
+                 
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ needs.setup-environment.outputs.AWS_REGION }}
+
+      - name: Deploy to AWS Lambda
+        env:
+          REPO_NAME: ${{ needs.setup-environment.outputs.REPO_NAME }}
+        run: aws lambda update-function-code --function-name ${{REPO_NAME }} --zip-file fileb://main.zip
