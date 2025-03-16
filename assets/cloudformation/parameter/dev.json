@@ -8,8 +8,12 @@
       "ParameterValue": "dev"
     },
     {
+      "ParameterKey": "FunctionLambdaName",
+      "ParameterValue": "go-oauth-lambda"
+    },
+    {
       "ParameterKey": "S3KeyParam",
-      "ParameterValue": "go-oauth-apigw-authorizer-lambda/main.zip"
+      "ParameterValue": "go-oauth-lambda/main.zip"
     },
     {
       "ParameterKey": "S3BucketParam",
