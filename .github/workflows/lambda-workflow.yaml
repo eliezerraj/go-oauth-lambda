@@ -127,6 +127,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
+      
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
     steps:
       - name: Checkout repository

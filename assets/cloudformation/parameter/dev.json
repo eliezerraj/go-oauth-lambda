@@ -1,14 +1,18 @@
 [
     {
+      "ParameterKey": "ApiVersion",
+      "ParameterValue": "3.0"
+    },
+    {
       "ParameterKey": "Env",
       "ParameterValue": "dev"
     },
     {
-      "ParameterKey": "ServiceAccountName",
-      "ParameterValue": "sa-go-oauth"
+      "ParameterKey": "S3KeyParam",
+      "ParameterValue": "go-oauth-apigw-authorizer-lambda/main.zip"
     },
     {
-      "ParameterKey": "K8Namespace",
-      "ParameterValue": "test-a"
+      "ParameterKey": "S3BucketParam",
+      "ParameterValue": "codepipeline-us-east-2-237656914886"
     }
 ]

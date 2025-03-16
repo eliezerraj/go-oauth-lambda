@@ -5,6 +5,9 @@ Parameters:
   Versao:
     Type: String
     Default: 0
+  ApiVersion:
+    Type: String
+    Default: 1.0
   Env:
     Type: String
     Default: dev
@@ -44,7 +47,6 @@ Parameters:
   S3KeyParam:
     Type: String 
     Default: go-oauth-apigw-authorizer-lambda/main.zip
-
   ManagedPolicyParameterOne:
     Description: Inform policy ARN (opcional)
     Type: String 
@@ -127,7 +129,7 @@ Resources:
           CRL_FILE_KEY: crl-ca.crl
           SECRET_NAME: 'key-jwt-auth'
           DYNAMO_TABLE_NAME: 'user_login_2'
-          API_VERSION: '3.0'
+          API_VERSION: !Red ApiVersion
           MODEL_SIGN: "RSA"
           END: !Ref Env
       Role: 
