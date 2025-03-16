@@ -154,4 +154,4 @@ jobs:
       - name: Deploy to AWS Lambda
         env:
           REPO_NAME: ${{ needs.setup-environment.outputs.REPO_NAME }}
-        run: aws lambda update-function-code --function-name ${{REPO_NAME }} --zip-file fileb://main.zip
+        run: aws lambda update-function-code --function-name $REPO_NAME --zip-file fileb://main.zip
