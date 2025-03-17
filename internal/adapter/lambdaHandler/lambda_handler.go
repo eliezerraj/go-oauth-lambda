@@ -34,9 +34,7 @@ func InitializeLambdaHandler( lambdaRouters *api.LambdaRouters) *LambdaHandler {
 func (l *LambdaHandler) LambdaHandlerRequest(ctx context.Context,
 											request events.APIGatewayProxyRequest ) (*events.APIGatewayProxyResponse, error) {
 	childLogger.Debug().Msg("LambdaHandlerRequest")
-	childLogger.Debug().Interface("request.HTTPMethod: ", request.HTTPMethod).Msg("")
-	childLogger.Debug().Interface("request.Resource: ", request.Resource).Msg("")
-	childLogger.Debug().Interface("requestFULL: ", request).Msg("")
+	childLogger.Debug().Interface("request: ", request).Msg("")
 
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.lambdaHandler.LambdaHandlerRequest")
