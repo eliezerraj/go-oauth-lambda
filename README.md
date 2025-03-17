@@ -56,7 +56,7 @@ arn:aws:lambda:us-east-2:901920570463:layer:aws-otel-collector-amd64-ver-0-90-1:
 
       {
          "user": "007",
-         "password": "MrBeam",
+         "password": "MrBeam"
       }
 
 + POST /tokenValidation

@@ -38,7 +38,7 @@ Parameters:
     Default: /dock/apigateway/go-oauth-lambda-api
   ApiGatewayDomainName:
     Type: String
-    Default: go-oauth.architecture.caradhras.io
+    Default: go-oauth-lambda.architecture.caradhras.io
   AuthorizerUri:
     Type: String
     Default: arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:908671954593:function:go-oauth-apigw-authorizer-lambda/invocations
@@ -51,6 +51,10 @@ Parameters:
   RegionalCertificateArn:
     Type: String
     Default: arn:aws:acm:us-east-2:908671954593:certificate/a784955c-9a8b-4403-bea2-527035ab3782
+  WafaclArn:
+    Type: String
+    Description: Association WAF in API ApiGateway
+    Default: arn:aws:wafv2:us-east-2:908671954593:regional/webacl/FMManagedWebACLV2-acl-basic-1663942040591/0c9a45b3-1c87-4cd9-86a9-e50fb1914e53
   Application:
     Type: String
     Default: go-oauth-lambda
@@ -63,16 +67,6 @@ Parameters:
   Squad:
     Type: String
     Default: architecture
-
-Mappings:
-  ApiGateway:
-    Properties:
-      Methods:
-      - get
-      - post
-      - put
-      - patch
-      - delete
 
 Resources:
   ApiPublicLogGroup:
@@ -279,6 +273,14 @@ Resources:
       FunctionName: !Ref LambdaFunctionArn
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
+
+  WafAssociation:
+    Type: AWS::WAFv2::WebACLAssociation
+    Properties:
+      ResourceArn:
+        Fn::Sub: arn:aws:apigateway:${AWS::Region}::/restapis/${ApiPublicGateway}/stages/${ApiPublicGateway.Stage}
+      WebACLArn:
+        Ref: WafaclArn
 
 Outputs:
   ApiPublicGateway:
