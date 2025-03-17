@@ -2,6 +2,8 @@ package lambdaHandler
 
 import(
 	"context"
+	"strings"
+
 	"github.com/rs/zerolog/log"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -43,23 +45,23 @@ func (l *LambdaHandler) LambdaHandlerRequest(ctx context.Context,
 	// Check the http method and path
 	switch request.HTTPMethod {
 		case "GET":
-			if (request.Path == "/credential/{id}"){  
+			if strings.Contains(request.Path, "/credential/"){  
 				response, _ = l.lambdaRouters.GetCredential(ctx, request) // Query the scopes associated with credential
-			}else if (request.Path == "/info"){
+			}else if strings.Contains(request.Path , "/info"){
 				response, _ = l.lambdaRouters.GetInfo(ctx)
 			}else {
 				response, _ = l.lambdaRouters.UnhandledMethod()
 			}
 		case "POST":
-			if (request.Path == "/oauth_credential"){  
+			if strings.Contains(request.Path, "/oauth_credential"){  
 				response, _ = l.lambdaRouters.OAUTHCredential(ctx, request) // Login
-			}else if (request.Path == "/refreshToken") {
+			}else if strings.Contains(request.Path, "/refreshToken") {
 				response, _ = l.lambdaRouters.RefreshToken(ctx, request) // Refresh Token
-			}else if (request.Path == "/tokenValidation") {
+			}else if strings.Contains(request.Path, "/tokenValidation") {
 				response, _ = l.lambdaRouters.TokenValidation(ctx, request) // Do a JWT validation (signature and expiration date)
-			}else if (request.Path == "/signIn") {
+			}else if strings.Contains(request.Path, "/signIn") {
 				response, _ = l.lambdaRouters.SignIn(ctx, request) // Create a new credentials
-			}else if (request.Path == "/addScope") {
+			}else if strings.Contains(request.Path,"/addScope") {
 				response, _ =  l.lambdaRouters.AddScope(ctx, request) // Add scopes to the credential
 			}else {
 				response, _ = l.lambdaRouters.UnhandledMethod()
