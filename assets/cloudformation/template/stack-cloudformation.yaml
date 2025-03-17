@@ -59,6 +59,10 @@ Parameters:
     Description: Inform policy ARN (opcional)
     Type: String 
     Default: "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+  ManagedPolicyParameterFour:
+    Description: Inform policy ARN (opcional)
+    Type: String 
+    Default: "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
   CrlBucketNameKey:
     Description: Crl Bucket Name
     Type: String 
@@ -81,6 +85,7 @@ Conditions:
   IsManagedPolicyParameterOne:    !Not [!Equals [ !Ref ManagedPolicyParameterOne, "" ]]
   IsManagedPolicyParameterTwo:    !Not [!Equals [ !Ref ManagedPolicyParameterTwo, "" ]]
   IsManagedPolicyParameterThree:  !Not [!Equals [ !Ref ManagedPolicyParameterThree, "" ]]
+  IsManagedPolicyParameterFour:   !Not [!Equals [ !Ref ManagedPolicyParameterFour, "" ]]
 
 Resources:
   LambdaExecutionRole:
@@ -100,6 +105,7 @@ Resources:
         - !If [ IsManagedPolicyParameterOne, !Ref ManagedPolicyParameterOne, !Ref 'AWS::NoValue' ]
         - !If [ IsManagedPolicyParameterTwo, !Ref ManagedPolicyParameterTwo, !Ref 'AWS::NoValue' ]
         - !If [ IsManagedPolicyParameterThree, !Ref ManagedPolicyParameterThree, !Ref 'AWS::NoValue' ]
+        - !If [ IsManagedPolicyParameterFour, !Ref IsManagedPolicyParameterFour, !Ref 'AWS::NoValue' ]
       Policies:
       - PolicyName: lambda_policy
         PolicyDocument:
@@ -114,8 +120,9 @@ Resources:
             - "logs:CreateLogGroup"
             - "logs:CreateLogStream"
             - "logs:PutLogEvents"
-            - "logs:PutLogEvents"
             - "ssm:GetParameter"
+            - "xray:PutTraceSegments"
+            - "xray:PutTelemetryRecords"
             Resource: "*"
 
   LambdaFunction: 
