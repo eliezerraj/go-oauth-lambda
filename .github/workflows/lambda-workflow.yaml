@@ -177,15 +177,7 @@ jobs:
           ls -lah
           echo "Recursive file list:"
           ls -R build
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v4
-        with:
-          version: 'latest'
-                 
+                         
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -197,4 +189,4 @@ jobs:
       - name: Deploy to AWS Lambda
         env:
           REPO_NAME: ${{ needs.setup-environment.outputs.REPO_NAME }}
-        run: aws lambda update-function-code --function-name $REPO_NAME --zip-file fileb://build/main.zip
+        run: aws lambda update-function-code --function-name $REPO_NAME --zip-file fileb://./build/main.zip
