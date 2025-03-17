@@ -68,6 +68,14 @@ Parameters:
     Type: String
     ConstraintDescription: must be a valid environment provided.al2)
     Default: provided.al2
+  Layer01Arn:
+    Description: Inform the arn layer 01 
+    Type: String
+    Default: arn:aws:lambda:us-east-2:901920570463:layer:aws-otel-collector-amd64-ver-0-115-0:2
+  Layer02Arn:
+    Description: Inform the arn layer 02
+    Type: String
+    Default: arn:aws:lambda:us-east-2:580247275435:layer:LambdaInsightsExtension:55 # https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Lambda-Insights-extension-versionsx86-64.html
 
 Conditions:
   IsManagedPolicyParameterOne:    !Not [!Equals [ !Ref ManagedPolicyParameterOne, "" ]]
@@ -117,6 +125,11 @@ Resources:
       Handler: !Ref HandlerName
       Timeout: !Ref Timeout
       Runtime: !Ref Runtime
+      TracingConfig:
+        Mode: Active   
+      Layers:
+        - !Ref Layer01Arn
+        - !Ref Layer02Arn    
       Environment:
         Variables:
           POD_NAME: !Ref FunctionLambdaName
