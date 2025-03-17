@@ -118,7 +118,7 @@ Resources:
         schemes:
         - https
         paths:
-          /{proxy+}:
+          /info:
             get:
               produces:
               - application/json
@@ -134,12 +134,12 @@ Resources:
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunctionArn}/invocations
                 passthroughBehavior: when_no_match
                 requestParameters:
-                  integration.request.path.proxy: method.request.path.proxy
                   integration.request.header.requestId: context.requestId
                   integration.request.header.X-Forwarded-For: context.identity.sourceIp
                   integration.request.header.X-AppClient-ID: context.authorizer.principalId         
               #security:
               #- authorizer: []
+          /oauth_credential:
             post:
               produces:
               - application/json
@@ -155,12 +155,94 @@ Resources:
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunctionArn}/invocations
                 passthroughBehavior: when_no_match
                 requestParameters:
-                  integration.request.path.proxy: method.request.path.proxy
                   integration.request.header.requestId: context.requestId
                   integration.request.header.X-Forwarded-For: context.identity.sourceIp
                   integration.request.header.X-AppClient-ID: context.authorizer.principalId         
               #security:
               #- authorizer: []
+          /refreshToken:
+            post:
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  schema:
+                    $ref: '#/definitions/Empty'
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST # This is mandatory for lambdas
+                uri: 
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunctionArn}/invocations
+                passthroughBehavior: when_no_match
+                requestParameters:
+                  integration.request.header.requestId: context.requestId
+                  integration.request.header.X-Forwarded-For: context.identity.sourceIp
+                  integration.request.header.X-AppClient-ID: context.authorizer.principalId         
+              #security:
+              #- authorizer: []
+          /tokenValidation:
+            post:
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  schema:
+                    $ref: '#/definitions/Empty'
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST # This is mandatory for lambdas
+                uri: 
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunctionArn}/invocations
+                passthroughBehavior: when_no_match
+                requestParameters:
+                  integration.request.header.requestId: context.requestId
+                  integration.request.header.X-Forwarded-For: context.identity.sourceIp
+                  integration.request.header.X-AppClient-ID: context.authorizer.principalId         
+              #security:
+              #- authorizer: []
+          /signIn:
+            post:
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  schema:
+                    $ref: '#/definitions/Empty'
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST # This is mandatory for lambdas
+                uri: 
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunctionArn}/invocations
+                passthroughBehavior: when_no_match
+                requestParameters:
+                  integration.request.header.requestId: context.requestId
+                  integration.request.header.X-Forwarded-For: context.identity.sourceIp
+                  integration.request.header.X-AppClient-ID: context.authorizer.principalId         
+              #security:
+              #- authorizer: []
+          /addScope:
+            post:
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  schema:
+                    $ref: '#/definitions/Empty'
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST # This is mandatory for lambdas
+                uri: 
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunctionArn}/invocations
+                passthroughBehavior: when_no_match
+                requestParameters:
+                  integration.request.header.requestId: context.requestId
+                  integration.request.header.X-Forwarded-For: context.identity.sourceIp
+                  integration.request.header.X-AppClient-ID: context.authorizer.principalId         
+              #security:
           /credential/{id}:
             get:
               produces:
@@ -177,7 +259,7 @@ Resources:
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunctionArn}/invocations
                 passthroughBehavior: when_no_match
                 requestParameters:
-                  integration.request.path.proxy: method.request.path.proxy
+                  integration.request.path.id: method.request.path.id
                   integration.request.header.requestId: context.requestId
                   integration.request.header.X-Forwarded-For: context.identity.sourceIp
                   integration.request.header.X-AppClient-ID: context.authorizer.principalId
