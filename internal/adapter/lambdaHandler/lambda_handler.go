@@ -34,6 +34,7 @@ func (l *LambdaHandler) LambdaHandlerRequest(ctx context.Context,
 	childLogger.Debug().Msg("LambdaHandlerRequest")
 	childLogger.Debug().Interface("request.HTTPMethod: ", request.HTTPMethod).Msg("")
 	childLogger.Debug().Interface("request.Resource: ", request.Resource).Msg("")
+	childLogger.Debug().Interface("requestFULL: ", request).Msg("")
 
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.lambdaHandler.LambdaHandlerRequest")
