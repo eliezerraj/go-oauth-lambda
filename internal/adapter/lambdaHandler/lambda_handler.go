@@ -43,23 +43,23 @@ func (l *LambdaHandler) LambdaHandlerRequest(ctx context.Context,
 	// Check the http method and path
 	switch request.HTTPMethod {
 		case "GET":
-			if (request.Resource == "/credential/{id}"){  
+			if (request.Path == "/credential/{id}"){  
 				response, _ = l.lambdaRouters.GetCredential(ctx, request) // Query the scopes associated with credential
-			}else if (request.Resource == "/info"){
+			}else if (request.Path == "/info"){
 				response, _ = l.lambdaRouters.GetInfo(ctx)
 			}else {
 				response, _ = l.lambdaRouters.UnhandledMethod()
 			}
 		case "POST":
-			if (request.Resource == "/oauth_credential"){  
+			if (request.Path == "/oauth_credential"){  
 				response, _ = l.lambdaRouters.OAUTHCredential(ctx, request) // Login
-			}else if (request.Resource == "/refreshToken") {
+			}else if (request.Path == "/refreshToken") {
 				response, _ = l.lambdaRouters.RefreshToken(ctx, request) // Refresh Token
-			}else if (request.Resource == "/tokenValidation") {
+			}else if (request.Path == "/tokenValidation") {
 				response, _ = l.lambdaRouters.TokenValidation(ctx, request) // Do a JWT validation (signature and expiration date)
-			}else if (request.Resource == "/signIn") {
+			}else if (request.Path == "/signIn") {
 				response, _ = l.lambdaRouters.SignIn(ctx, request) // Create a new credentials
-			}else if (request.Resource == "/addScope") {
+			}else if (request.Path == "/addScope") {
 				response, _ =  l.lambdaRouters.AddScope(ctx, request) // Add scopes to the credential
 			}else {
 				response, _ = l.lambdaRouters.UnhandledMethod()
