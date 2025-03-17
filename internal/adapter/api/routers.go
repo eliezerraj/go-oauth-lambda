@@ -82,7 +82,8 @@ func (l *LambdaRouters) GetInfo(ctx context.Context) (*events.APIGatewayProxyRes
 	span := tracerProvider.Span(ctx, "adapter.api.Login")
 	defer span.End()
 
-	handlerResponse, err := ApiHandlerResponse(http.StatusOK, "h.appServer")
+	msg := "ok from lambda"
+	handlerResponse, err := ApiHandlerResponse(http.StatusOK,  MessageBody{Msg: &msg })
 	if err != nil {
 		return ApiHandlerResponse(http.StatusInternalServerError, MessageBody{ErrorMsg: aws.String(err.Error())})
 	}
