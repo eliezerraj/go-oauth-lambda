@@ -75,7 +75,7 @@ Parameters:
   Layer01Arn:
     Description: Inform the arn layer 01 
     Type: String
-    Default: arn:aws:lambda:us-east-2:901920570463:layer:aws-otel-collector-amd64-ver-0-115-0:2
+    Default: arn:aws:lambda:us-east-2:901920570463:layer:aws-otel-collector-amd64-ver-0-115-0:2 #https://github.com/open-telemetry/opentelemetry-lambda/releases
   Layer02Arn:
     Description: Inform the arn layer 02
     Type: String
@@ -105,7 +105,7 @@ Resources:
         - !If [ IsManagedPolicyParameterOne, !Ref ManagedPolicyParameterOne, !Ref 'AWS::NoValue' ]
         - !If [ IsManagedPolicyParameterTwo, !Ref ManagedPolicyParameterTwo, !Ref 'AWS::NoValue' ]
         - !If [ IsManagedPolicyParameterThree, !Ref ManagedPolicyParameterThree, !Ref 'AWS::NoValue' ]
-        - !If [ IsManagedPolicyParameterFour, !Ref IsManagedPolicyParameterFour, !Ref 'AWS::NoValue' ]
+        - !If [ IsManagedPolicyParameterFour, !Ref ManagedPolicyParameterFour, !Ref 'AWS::NoValue' ]
       Policies:
       - PolicyName: lambda_policy
         PolicyDocument:
