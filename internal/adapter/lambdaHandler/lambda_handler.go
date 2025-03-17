@@ -45,7 +45,7 @@ func (l *LambdaHandler) LambdaHandlerRequest(ctx context.Context,
 	// Check the http method and path
 	switch request.HTTPMethod {
 		case "GET":
-			if strings.Contains(request.Path, "/credential/"){  
+			if strings.Contains(request.Path, "/credential/{id}"){  
 				response, _ = l.lambdaRouters.GetCredential(ctx, request) // Query the scopes associated with credential
 			}else if strings.Contains(request.Path , "/info"){
 				response, _ = l.lambdaRouters.GetInfo(ctx)
