@@ -138,8 +138,8 @@ Resources:
                   integration.request.header.requestId: context.requestId
                   integration.request.header.X-Forwarded-For: context.identity.sourceIp
                   integration.request.header.X-AppClient-ID: context.authorizer.principalId         
-              security:
-              - authorizer: []
+              #security:
+              #- authorizer: []
             post:
               produces:
               - application/json
@@ -159,8 +159,30 @@ Resources:
                   integration.request.header.requestId: context.requestId
                   integration.request.header.X-Forwarded-For: context.identity.sourceIp
                   integration.request.header.X-AppClient-ID: context.authorizer.principalId         
-              security:
-              - authorizer: []
+              #security:
+              #- authorizer: []
+          /credential/{id}:
+            get:
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  schema:
+                    $ref: '#/definitions/Empty'
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST # This is mandatory for lambdas
+                uri: 
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunctionArn}/invocations
+                passthroughBehavior: when_no_match
+                requestParameters:
+                  integration.request.path.proxy: method.request.path.proxy
+                  integration.request.header.requestId: context.requestId
+                  integration.request.header.X-Forwarded-For: context.identity.sourceIp
+                  integration.request.header.X-AppClient-ID: context.authorizer.principalId
+              #security:
+              #- authorizer: []                         
         x-amazon-apigateway-api-key-source: AUTHORIZER
         securityDefinitions:
           authorizer:
