@@ -76,7 +76,7 @@ func (l *LambdaRouters) setSignModel(model string, credential *model.Credential)
 
 // About get into
 func (l *LambdaRouters) GetInfo(ctx context.Context) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Debug().Msg("GetInfo")
+	childLogger.Info().Msg("GetInfo")
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.Login")
@@ -93,7 +93,7 @@ func (l *LambdaRouters) GetInfo(ctx context.Context) (*events.APIGatewayProxyRes
 
 // About sign-in
 func (l *LambdaRouters) OAUTHCredential(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Debug().Msg("OAUTHCredential")
+	childLogger.Info().Msg("OAUTHCredential")
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.OAUTHCredential")
@@ -133,7 +133,7 @@ func (l *LambdaRouters) OAUTHCredential(ctx context.Context, req events.APIGatew
 
 // About refresh
 func (l *LambdaRouters) RefreshToken(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Debug().Msg("RefreshToken")
+	childLogger.Info().Msg("RefreshToken")
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.RefreshToken")
@@ -175,7 +175,7 @@ func (l *LambdaRouters) RefreshToken(ctx context.Context, req events.APIGatewayP
 
 // About TokenValidation
 func (l *LambdaRouters) TokenValidation(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Debug().Msg("TokenValidation")
+	childLogger.Info().Msg("TokenValidation")
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.TokenValidation")
@@ -217,7 +217,7 @@ func (l *LambdaRouters) TokenValidation(ctx context.Context, req events.APIGatew
 
 // About SignIn
 func (l *LambdaRouters) SignIn(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Debug().Msg("SignIn")
+	childLogger.Info().Msg("SignIn")
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.SignIn")
@@ -250,7 +250,7 @@ func (l *LambdaRouters) SignIn(ctx context.Context, req events.APIGatewayProxyRe
 
 // About GetCredential
 func (l *LambdaRouters) GetCredential(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Debug().Msg("GetCredential")
+	childLogger.Info().Msg("GetCredential")
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.GetCredential")
@@ -285,7 +285,7 @@ func (l *LambdaRouters) GetCredential(ctx context.Context, req events.APIGateway
 
 // About AddScope
 func (l *LambdaRouters) AddScope(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Debug().Msg("AddScope")
+	childLogger.Info().Msg("AddScope")
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.AddScope")
