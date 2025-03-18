@@ -24,7 +24,7 @@ func NewWorkerService(	coreDynamoDB 		*go_core_aws_dynamo.DatabaseDynamo,
 						keys				*model.RsaKey,
 						tokenSignedValidation 	func(string, interface{}) (*model.JwtData, error),
 						createdToken 			func(interface{}, time.Time, model.JwtData) (*model.Authentication, error) ) (*WorkerService, error) {
-	childLogger.Debug().Msg("NewWorkerService")
+	childLogger.Info().Msg("NewWorkerService")
 
 	return &WorkerService{	coreDynamoDB: coreDynamoDB,
 							awsService: awsService,

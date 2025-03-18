@@ -30,7 +30,7 @@ type MessageService struct {
 
 // About check token HS256 expired/signature and claims
 func TokenValidationHS256(bearerToken string, hs256Key interface{}) ( *model.JwtData, error){
-	childLogger.Debug().Msg("TokenValidationHS256")
+	childLogger.Info().Msg("TokenValidationHS256")
 
 	claims := &model.JwtData{}
 	tkn, err := jwt.ParseWithClaims(bearerToken, claims, func(token *jwt.Token) (interface{}, error) {
@@ -53,7 +53,7 @@ func TokenValidationHS256(bearerToken string, hs256Key interface{}) ( *model.Jwt
 
 // About check token RSA expired/signature and claims
 func TokenValidationRSA(bearerToken string, rsaPubKey interface{})( *model.JwtData, error){
-	childLogger.Debug().Msg("TokenValidationRSA")
+	childLogger.Info().Msg("TokenValidationRSA")
 
 	claims := &model.JwtData{}
 	tkn, err := jwt.ParseWithClaims(bearerToken, claims, func(token *jwt.Token) (interface{}, error) {
@@ -76,7 +76,7 @@ func TokenValidationRSA(bearerToken string, rsaPubKey interface{})( *model.JwtDa
 
 // About create token HS256
 func CreatedTokenHS256(Hs256Key interface{}, expirationTime time.Time, jwtData model.JwtData) (*model.Authentication, error){
-	childLogger.Debug().Msg("CreatedTokenHS256")
+	childLogger.Info().Msg("CreatedTokenHS256")
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwtData)
 	tokenString, err := token.SignedString([]byte(fmt.Sprint(Hs256Key)))
@@ -92,7 +92,7 @@ func CreatedTokenHS256(Hs256Key interface{}, expirationTime time.Time, jwtData m
 
 // About create token RSA
 func CreatedTokenRSA(keyRsaPriv interface{}, expirationTime time.Time, jwtData model.JwtData) (*model.Authentication, error){
-	childLogger.Debug().Msg("CreatedTokenRSA")
+	childLogger.Info().Msg("CreatedTokenRSA")
 
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwtData)
 	tokenString, err := token.SignedString(keyRsaPriv)
@@ -108,8 +108,8 @@ func CreatedTokenRSA(keyRsaPriv interface{}, expirationTime time.Time, jwtData m
 
 // About Login
 func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Credential) (*model.Authentication, error){
-	childLogger.Debug().Msg("OAUTHCredential")
-	childLogger.Debug().Interface("credential: ", credential).Msg("")
+	childLogger.Info().Msg("OAUTHCredential")
+	childLogger.Info().Interface("credential: ", credential).Msg("")
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.OAUTHCredential")
@@ -176,7 +176,7 @@ func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Cr
 
 // About check a token expitation date
 func (w *WorkerService) TokenValidation(ctx context.Context, credential model.Credential) (MessageService, error){
-	childLogger.Debug().Msg("TokenValidation")
+	childLogger.Info().Msg("TokenValidation")
 	//childLogger.Debug().Interface("credential: ", credential).Msg("")
 
 	// Trace
@@ -194,7 +194,7 @@ func (w *WorkerService) TokenValidation(ctx context.Context, credential model.Cr
 
 // About refresh token
 func (w *WorkerService) RefreshToken(ctx context.Context, credential model.Credential) (*model.Authentication, error){
-	childLogger.Debug().Msg("RefreshToken")
+	childLogger.Info().Msg("RefreshToken")
 	//childLogger.Debug().Interface("credential: ", credential).Msg("")
 
 	// Trace
@@ -225,7 +225,7 @@ func (w *WorkerService) RefreshToken(ctx context.Context, credential model.Crede
 
 // About wellKnown
 func (w *WorkerService) WellKnown(ctx context.Context) (*model.Jwks, error){
-	childLogger.Debug().Msg("WellKnown")
+	childLogger.Info().Msg("WellKnown")
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.WellKnown")
@@ -253,7 +253,7 @@ func (w *WorkerService) WellKnown(ctx context.Context) (*model.Jwks, error){
 
 // About valid token was signed with pub key
 func (w *WorkerService) ValidationTokenSignedPubKey(ctx context.Context, jwksData model.JwksData) (MessageService, error){
-	childLogger.Debug().Msg("ValidationTokenSignedPubKey")
+	childLogger.Info().Msg("ValidationTokenSignedPubKey")
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.ValidationTokenSignedPubKey")
@@ -282,7 +282,7 @@ func (w *WorkerService) ValidationTokenSignedPubKey(ctx context.Context, jwksDat
 
 // About valid a crl list
 func (w *WorkerService) VerifyCertCRL(ctx context.Context, certX509PemEncoded string) (bool, error){
-	childLogger.Debug().Msg("VerifyCertCRL")
+	childLogger.Info().Msg("VerifyCertCRL")
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.VerifyCertCRL")

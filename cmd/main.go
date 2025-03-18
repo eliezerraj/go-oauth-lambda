@@ -28,6 +28,7 @@ import(
 	"go.opentelemetry.io/contrib/propagators/aws/xray"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-sdk-go-v2/otelaws"
 )
 
 var(
@@ -62,7 +63,11 @@ func loadKey(	ctx context.Context,
 				awsService model.AwsService, 
 				coreSecretManager 	*go_core_aws_secret_manager.AwsSecretManager,
 				coreBucketS3 		*go_core_bucket_s3.AwsBucketS3) (*model.RsaKey, error){
-	log.Debug().Msg("loadKey")
+	log.Info().Msg("loadKey")
+
+	//trace
+	span := tracerProvider.Span(ctx, "main.loadKey")
+	defer span.End()
 
 	// Load symetric key from secret manager
 	var certCore go_core_cert.CertCore
@@ -122,10 +127,10 @@ func loadKey(	ctx context.Context,
 
 // About main
 func main (){
-	log.Debug().Msg("main")
-	log.Debug().Msg("----------------------------------------------------")
-	log.Debug().Interface("appServer :",appServer).Msg("")
-	log.Debug().Msg("----------------------------------------------------")
+	log.Info().Msg("main")
+	log.Info().Msg("----------------------------------------------------")
+	log.Info().Interface("appServer :",appServer).Msg("")
+	log.Info().Msg("----------------------------------------------------")
 
 	ctx := context.Background()
 
@@ -156,7 +161,8 @@ func main (){
 	if err != nil {
 		panic("error create new aws session " + err.Error())
 	}
-
+	otelaws.AppendMiddlewares(&awsConfig.APIOptions)
+	
 	// Prepare AWS services
 	coreDynamoDB := databaseDynamo.NewDatabaseDynamo(awsConfig)
 	coreSecretManager := awsSecretManager.NewAwsSecretManager(awsConfig)

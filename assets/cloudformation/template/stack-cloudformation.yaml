@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Lambda Public template
+Description: Lambda Public template v3.0 17/03/2025
 
 Parameters:
   Versao:
@@ -47,6 +47,7 @@ Parameters:
   S3KeyParam:
     Type: String 
     Default: go-oauth-lambda/main.zip
+
   ManagedPolicyParameterOne:
     Description: Inform policy ARN (opcional)
     Type: String 
@@ -63,6 +64,7 @@ Parameters:
     Description: Inform policy ARN (opcional)
     Type: String 
     Default: "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
+    
   CrlBucketNameKey:
     Description: Crl Bucket Name
     Type: String 

@@ -12,8 +12,8 @@ import (
 
 // About create a new credential
 func (w *WorkerService) SignIn(ctx context.Context, credential model.Credential) (*model.Credential, error){
-	childLogger.Debug().Msg("SignIn")
-	childLogger.Debug().Interface("credential: ", credential).Msg("")
+	childLogger.Info().Msg("SignIn")
+	childLogger.Info().Interface("credential: ", credential).Msg("")
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.SignIn")
@@ -35,8 +35,8 @@ func (w *WorkerService) SignIn(ctx context.Context, credential model.Credential)
 
 // About add a scope
 func (w *WorkerService) AddScope(ctx context.Context, credential_scope model.CredentialScope) (*model.CredentialScope, error){
-	childLogger.Debug().Msg("AddScope")
-	childLogger.Debug().Interface("credential_scope: ", credential_scope).Msg("")
+	childLogger.Info().Msg("AddScope")
+	childLogger.Info().Interface("credential_scope: ", credential_scope).Msg("")
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.AddScope")
@@ -58,8 +58,8 @@ func (w *WorkerService) AddScope(ctx context.Context, credential_scope model.Cre
 
 // About get credential
 func (w *WorkerService) GetCredential(ctx context.Context, credential model.Credential) (*model.Credential, error){
-	childLogger.Debug().Msg("GetCredential")
-	childLogger.Debug().Interface("credential: ", credential).Msg("")
+	childLogger.Info().Msg("GetCredential")
+	childLogger.Info().Interface("credential: ", credential).Msg("")
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.GetCredential")
