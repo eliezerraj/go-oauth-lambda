@@ -145,9 +145,14 @@ func main (){
 	tp := tracerProvider.NewTracerProvider(	ctx, 
 											appServer.ConfigOTEL, 
 											&infoTrace)
-	otel.SetTextMapPropagator(xray.Propagator{})
+
 	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(xray.Propagator{})
 	tracer = tp.Tracer(appServer.InfoPod.PodName)
+
+	// Start the root tracer
+	ctx, span := tracer.Start(ctx, "lambda-main-span")
+	defer span.End()
 
 	defer func(ctx context.Context) {
 			err := tp.Shutdown(ctx)
