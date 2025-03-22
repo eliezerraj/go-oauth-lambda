@@ -30,7 +30,7 @@ type MessageService struct {
 
 // About check token HS256 expired/signature and claims
 func TokenValidationHS256(bearerToken string, hs256Key interface{}) ( *model.JwtData, error){
-	childLogger.Info().Msg("TokenValidationHS256")
+	childLogger.Info().Str("func","TokenValidationHS256").Send()
 
 	claims := &model.JwtData{}
 	tkn, err := jwt.ParseWithClaims(bearerToken, claims, func(token *jwt.Token) (interface{}, error) {
@@ -53,7 +53,7 @@ func TokenValidationHS256(bearerToken string, hs256Key interface{}) ( *model.Jwt
 
 // About check token RSA expired/signature and claims
 func TokenValidationRSA(bearerToken string, rsaPubKey interface{})( *model.JwtData, error){
-	childLogger.Info().Msg("TokenValidationRSA")
+	childLogger.Info().Str("func","TokenValidationRSA").Send()
 
 	claims := &model.JwtData{}
 	tkn, err := jwt.ParseWithClaims(bearerToken, claims, func(token *jwt.Token) (interface{}, error) {
@@ -76,7 +76,7 @@ func TokenValidationRSA(bearerToken string, rsaPubKey interface{})( *model.JwtDa
 
 // About create token HS256
 func CreatedTokenHS256(Hs256Key interface{}, expirationTime time.Time, jwtData model.JwtData) (*model.Authentication, error){
-	childLogger.Info().Msg("CreatedTokenHS256")
+	childLogger.Info().Str("func","CreatedTokenHS256").Send()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwtData)
 	tokenString, err := token.SignedString([]byte(fmt.Sprint(Hs256Key)))
@@ -92,7 +92,7 @@ func CreatedTokenHS256(Hs256Key interface{}, expirationTime time.Time, jwtData m
 
 // About create token RSA
 func CreatedTokenRSA(keyRsaPriv interface{}, expirationTime time.Time, jwtData model.JwtData) (*model.Authentication, error){
-	childLogger.Info().Msg("CreatedTokenRSA")
+	childLogger.Info().Str("func","keyRsaPriv").Send()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwtData)
 	tokenString, err := token.SignedString(keyRsaPriv)
@@ -108,8 +108,7 @@ func CreatedTokenRSA(keyRsaPriv interface{}, expirationTime time.Time, jwtData m
 
 // About Login
 func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Credential) (*model.Authentication, error){
-	childLogger.Info().Msg("OAUTHCredential")
-	childLogger.Info().Interface("credential: ", credential).Msg("")
+	childLogger.Info().Str("func","OAUTHCredential").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Interface("credential", credential).Send()
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.OAUTHCredential")
@@ -176,8 +175,7 @@ func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Cr
 
 // About check a token expitation date
 func (w *WorkerService) TokenValidation(ctx context.Context, credential model.Credential) (MessageService, error){
-	childLogger.Info().Msg("TokenValidation")
-	//childLogger.Debug().Interface("credential: ", credential).Msg("")
+	childLogger.Info().Str("func","TokenValidation").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Interface("credential", credential).Send()
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.TokenValidation")
@@ -194,8 +192,7 @@ func (w *WorkerService) TokenValidation(ctx context.Context, credential model.Cr
 
 // About refresh token
 func (w *WorkerService) RefreshToken(ctx context.Context, credential model.Credential) (*model.Authentication, error){
-	childLogger.Info().Msg("RefreshToken")
-	//childLogger.Debug().Interface("credential: ", credential).Msg("")
+	childLogger.Info().Str("func","RefreshToken").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Interface("credential", credential).Send()
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.RefreshToken")
@@ -225,7 +222,7 @@ func (w *WorkerService) RefreshToken(ctx context.Context, credential model.Crede
 
 // About wellKnown
 func (w *WorkerService) WellKnown(ctx context.Context) (*model.Jwks, error){
-	childLogger.Info().Msg("WellKnown")
+	childLogger.Info().Str("func","WellKnown").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Send()
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.WellKnown")
@@ -253,7 +250,7 @@ func (w *WorkerService) WellKnown(ctx context.Context) (*model.Jwks, error){
 
 // About valid token was signed with pub key
 func (w *WorkerService) ValidationTokenSignedPubKey(ctx context.Context, jwksData model.JwksData) (MessageService, error){
-	childLogger.Info().Msg("ValidationTokenSignedPubKey")
+	childLogger.Info().Str("func","ValidationTokenSignedPubKey").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Interface("jwksData", jwksData).Send()
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.ValidationTokenSignedPubKey")
@@ -282,7 +279,7 @@ func (w *WorkerService) ValidationTokenSignedPubKey(ctx context.Context, jwksDat
 
 // About valid a crl list
 func (w *WorkerService) VerifyCertCRL(ctx context.Context, certX509PemEncoded string) (bool, error){
-	childLogger.Info().Msg("VerifyCertCRL")
+	childLogger.Info().Str("func","VerifyCertCRL").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Interface("certX509PemEncoded", certX509PemEncoded).Send()
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.VerifyCertCRL")

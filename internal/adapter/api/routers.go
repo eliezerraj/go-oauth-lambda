@@ -17,7 +17,7 @@ import(
 	go_core_observ "github.com/eliezerraj/go-core/observability"
 )
 
-var childLogger = log.With().Str("adapter", "api.router").Logger()
+var childLogger = log.With().Str("component", "go-oauth-lambda").Str("package", "internal.adapter.api").Logger()
 
 var tracerProvider go_core_observ.TracerProvider
 var response		*events.APIGatewayProxyResponse
@@ -28,7 +28,8 @@ type LambdaRouters struct {
 }
 
 func NewLambdaRouters(workerService *service.WorkerService, model string) LambdaRouters {
-	childLogger.Debug().Msg("NewLambdaRouters")
+	childLogger.Info().Str("func","NewLambdaRouters").Send()
+
 	return LambdaRouters{
 		workerService: workerService,
 		model: model,
@@ -36,6 +37,8 @@ func NewLambdaRouters(workerService *service.WorkerService, model string) Lambda
 }
 
 func ApiHandlerResponse(statusCode int, body interface{}) (*events.APIGatewayProxyResponse, error){
+	childLogger.Info().Str("func","ApiHandlerResponse").Send()
+
 	stringBody, err := json.Marshal(&body)
 	if err != nil {
 		return nil, erro.ErrUnmarshal
@@ -51,6 +54,8 @@ func ApiHandlerResponse(statusCode int, body interface{}) (*events.APIGatewayPro
 }
 
 func (l *LambdaRouters) UnhandledMethod() (*events.APIGatewayProxyResponse, error){
+	childLogger.Info().Str("func","UnhandledMethod").Send()
+
 	return ApiHandlerResponse(http.StatusMethodNotAllowed, MessageBody{ErrorMsg: aws.String(erro.ErrMethodNotAllowed.Error())})
 }
 
@@ -61,6 +66,8 @@ type MessageBody struct {
 
 // Above setup the type model of jwt key signature
 func (l *LambdaRouters) setSignModel(model string, credential *model.Credential){
+	childLogger.Info().Str("func","setSignModel").Send()
+
 	if model == "HS256" {
 		credential.JwtKeySign = l.workerService.Keys.JwtKey
 		credential.JwtKeyCreation = l.workerService.Keys.JwtKey
@@ -76,7 +83,7 @@ func (l *LambdaRouters) setSignModel(model string, credential *model.Credential)
 
 // About get into
 func (l *LambdaRouters) GetInfo(ctx context.Context) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Info().Msg("GetInfo")
+	childLogger.Info().Str("func","GetInfo").Send()
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.Login")
@@ -93,7 +100,7 @@ func (l *LambdaRouters) GetInfo(ctx context.Context) (*events.APIGatewayProxyRes
 
 // About sign-in
 func (l *LambdaRouters) OAUTHCredential(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Info().Msg("OAUTHCredential")
+	childLogger.Info().Str("func","OAUTHCredential").Send()
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.OAUTHCredential")
@@ -133,7 +140,7 @@ func (l *LambdaRouters) OAUTHCredential(ctx context.Context, req events.APIGatew
 
 // About refresh
 func (l *LambdaRouters) RefreshToken(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Info().Msg("RefreshToken")
+	childLogger.Info().Str("func","RefreshToken").Send()
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.RefreshToken")
@@ -175,7 +182,7 @@ func (l *LambdaRouters) RefreshToken(ctx context.Context, req events.APIGatewayP
 
 // About TokenValidation
 func (l *LambdaRouters) TokenValidation(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Info().Msg("TokenValidation")
+	childLogger.Info().Str("func","TokenValidation").Send()
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.TokenValidation")
@@ -217,7 +224,7 @@ func (l *LambdaRouters) TokenValidation(ctx context.Context, req events.APIGatew
 
 // About SignIn
 func (l *LambdaRouters) SignIn(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Info().Msg("SignIn")
+	childLogger.Info().Str("func","SignIn").Send()
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.SignIn")
@@ -250,8 +257,8 @@ func (l *LambdaRouters) SignIn(ctx context.Context, req events.APIGatewayProxyRe
 
 // About GetCredential
 func (l *LambdaRouters) GetCredential(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Info().Msg("GetCredential")
-	
+	childLogger.Info().Str("func","LambdaRouters").Send()
+
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.GetCredential")
 	defer span.End()
@@ -285,7 +292,7 @@ func (l *LambdaRouters) GetCredential(ctx context.Context, req events.APIGateway
 
 // About AddScope
 func (l *LambdaRouters) AddScope(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Info().Msg("AddScope")
+	childLogger.Info().Str("func","AddScope").Send()
 	
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.api.AddScope")
