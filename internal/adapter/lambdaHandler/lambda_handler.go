@@ -11,7 +11,7 @@ import(
 	go_core_observ "github.com/eliezerraj/go-core/observability"	
 )
 
-var childLogger = log.With().Str("adapter", "api.lambdaHandler").Logger()
+var childLogger = log.With().Str("component", "go-oauth-lambda").Str("package", "internal.adapter.lambdaHandler").Logger()
 
 var tracerProvider go_core_observ.TracerProvider
 var response		*events.APIGatewayProxyResponse
@@ -22,7 +22,7 @@ type LambdaHandler struct {
 
 // About inicialize handler
 func InitializeLambdaHandler( lambdaRouters *api.LambdaRouters) *LambdaHandler {
-	childLogger.Debug().Msg("InitializeLambdaHandler")
+	childLogger.Info().Str("func","InitializeLambdaHandler").Send()
 
     return &LambdaHandler{
 		lambdaRouters: lambdaRouters,
@@ -31,14 +31,16 @@ func InitializeLambdaHandler( lambdaRouters *api.LambdaRouters) *LambdaHandler {
 
 // About handle the request
 func (l *LambdaHandler) LambdaHandlerRequest(ctx context.Context,
-											request events.APIGatewayProxyRequest ) (*events.APIGatewayProxyResponse, error) {
-	childLogger.Debug().Msg("LambdaHandlerRequest")
-	childLogger.Debug().Interface("request: ", request).Msg("")
+											request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+	childLogger.Info().Str("func","LambdaHandlerRequest").Interface("request", request).Send()
 
 	//trace
 	span := tracerProvider.Span(ctx, "adapter.lambdaHandler.LambdaHandlerRequest")
 	defer span.End()
 	
+	// get the resquest-id and put in inside the 
+	ctx = context.WithValue(ctx, "trace-request-id", request.RequestContext.RequestID)
+
 	// Check the http method and path
 	switch request.HTTPMethod {
 		case "GET":
@@ -71,7 +73,7 @@ func (l *LambdaHandler) LambdaHandlerRequest(ctx context.Context,
 			response, _ = l.lambdaRouters.UnhandledMethod()
 	}	
 
-	childLogger.Debug().Interface("===== > response.Resource: ", response).Msg("")
+	childLogger.Info().Interface("response", response).Send()
 
 	return response, nil												
 }

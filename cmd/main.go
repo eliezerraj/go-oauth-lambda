@@ -32,7 +32,8 @@ import(
 )
 
 var(
-	logLevel = 	zerolog.DebugLevel
+	logLevel = 	zerolog.InfoLevel // zerolog.InfoLevel zerolog.DebugLevel
+	
 	appServer	model.AppServer
 	awsConfig 	go_core_aws_config.AwsConfig
 	databaseDynamo		go_core_aws_dynamo.DatabaseDynamo
@@ -42,11 +43,14 @@ var(
 	infoTrace go_core_observ.InfoTrace
 	tracer 			trace.Tracer
 	tracerProvider go_core_observ.TracerProvider
+
+	childLogger = log.With().Str("component","go-oauth-lambda").Str("package", "main").Logger()
 )
 
 // About initialize the enviroment var
 func init(){
-	log.Debug().Msg("init")
+	childLogger.Info().Str("func","init").Send()
+	
 	zerolog.SetGlobalLevel(logLevel)
 
 	infoPod := configuration.GetInfoPod()
@@ -63,7 +67,7 @@ func loadKey(	ctx context.Context,
 				awsService model.AwsService, 
 				coreSecretManager 	*go_core_aws_secret_manager.AwsSecretManager,
 				coreBucketS3 		*go_core_bucket_s3.AwsBucketS3) (*model.RsaKey, error){
-	log.Info().Msg("loadKey")
+	childLogger.Info().Str("func","loadKey").Send()
 
 	//trace
 	span := tracerProvider.Span(ctx, "main.loadKey")
@@ -127,16 +131,11 @@ func loadKey(	ctx context.Context,
 
 // About main
 func main (){
-	log.Info().Msg("main")
-	log.Info().Msg("----------------------------------------------------")
-	log.Info().Interface("appServer :",appServer).Msg("")
-	log.Info().Msg("----------------------------------------------------")
+	childLogger.Info().Str("func","main").Interface("appServer :",appServer).Send()
 
 	ctx := context.Background()
 
 	// otel
-	log.Info().Str("OTEL_EXPORTER_OTLP_ENDPOINT :", appServer.ConfigOTEL.OtelExportEndpoint).Msg("")
-
 	infoTrace.PodName = appServer.InfoPod.PodName
 	infoTrace.PodVersion = appServer.InfoPod.ApiVersion
 	infoTrace.ServiceType = "k8-workload"
@@ -216,6 +215,9 @@ func main (){
 	mockEvent = events.APIGatewayProxyRequest{
 		HTTPMethod: "GET",
 		Resource:    "/credential/{id}",
+		RequestContext: events.APIGatewayProxyRequestContext{
+			RequestID: "mock-request-id-12345",
+		},
 		Headers: map[string]string{
 			"Content-Type": "application/json",
 		},
