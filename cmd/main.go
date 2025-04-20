@@ -138,7 +138,7 @@ func main (){
 	// otel
 	infoTrace.PodName = appServer.InfoPod.PodName
 	infoTrace.PodVersion = appServer.InfoPod.ApiVersion
-	infoTrace.ServiceType = "k8-workload"
+	infoTrace.ServiceType = "lambda"
 	infoTrace.Env = appServer.InfoPod.Env
 
 	tp := tracerProvider.NewTracerProvider(	ctx, 
