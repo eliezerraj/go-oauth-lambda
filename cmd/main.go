@@ -138,7 +138,7 @@ func main (){
 	// otel
 	infoTrace.PodName = appServer.InfoPod.PodName
 	infoTrace.PodVersion = appServer.InfoPod.ApiVersion
-	infoTrace.ServiceType = "k8-workload"
+	infoTrace.ServiceType = "lambda"
 	infoTrace.Env = appServer.InfoPod.Env
 
 	tp := tracerProvider.NewTracerProvider(	ctx, 
@@ -165,6 +165,8 @@ func main (){
 	if err != nil {
 		panic("error create new aws session " + err.Error())
 	}
+
+	// Otel over aws services
 	otelaws.AppendMiddlewares(&awsConfig.APIOptions)
 	
 	// Prepare AWS services
