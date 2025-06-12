@@ -48,8 +48,7 @@ arn:aws:lambda:us-east-2:901920570463:layer:aws-otel-collector-amd64-ver-0-90-1:
       {
          "user":"admin",
          "password":"admin",
-         "usage_plan":"tier1",
-         "apikey":"2J8D44g4gTuojQ78pS3L4KTI936KKAx3gFueVTqg"
+         "tier":"tier1"
       }
 
 + POST /oauth_credential

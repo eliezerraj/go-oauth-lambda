@@ -95,6 +95,8 @@ func loadKey(	ctx context.Context,
 	if err != nil{
 		return nil, err
 	}
+	keys.Key_rsa_priv_pem = string(*private_key)
+
 	// Convert private key
 	key_rsa_priv, err := certCore.ParsePemToRSAPriv(private_key)
 	if err != nil{
@@ -104,12 +106,14 @@ func loadKey(	ctx context.Context,
 
 	// Load the private key
 	public_key, err := coreBucketS3.GetObject(ctx, 
-												awsService.BucketNameRSAKey,
-												awsService.FilePathRSA,
-												awsService.FileNameRSAPubKey )
+											awsService.BucketNameRSAKey,
+											awsService.FilePathRSA,
+											awsService.FileNameRSAPubKey )
 	if err != nil{
 		return nil, err
 	}
+	keys.Key_rsa_pub_pem = string(*public_key)
+
 	key_rsa_pub, err := certCore.ParsePemToRSAPub(public_key)
 	if err != nil{
 		return nil, err
@@ -118,9 +122,9 @@ func loadKey(	ctx context.Context,
 
 	// Load the crl
 	crl_pem, err := coreBucketS3.GetObject(ctx, 
-												awsService.BucketNameRSAKey,
-												awsService.FilePathRSA,
-												awsService.FileNameCrlKey )
+											awsService.BucketNameRSAKey,
+											awsService.FilePathRSA,
+											awsService.FileNameCrlKey )
 	if err != nil{
 		return nil, err
 	}
@@ -145,9 +149,11 @@ func main (){
 											appServer.ConfigOTEL, 
 											&infoTrace)
 
-	otel.SetTracerProvider(tp)
-	otel.SetTextMapPropagator(xray.Propagator{})
-	tracer = tp.Tracer(appServer.InfoPod.PodName)
+	if tp != nil {
+		otel.SetTracerProvider(tp)
+		otel.SetTextMapPropagator(xray.Propagator{})
+		tracer = tp.Tracer(appServer.InfoPod.PodName)
+	}
 
 	// Start the root tracer
 	ctx, span := tracer.Start(ctx, "lambda-main-span")
@@ -200,21 +206,40 @@ func main (){
 
 	/*mockEvent := events.APIGatewayProxyRequest{
 		HTTPMethod: "POST",
-		Path:       "/test",
+		Resource:    "/signIn",
 		Headers: map[string]string{
 			"Content-Type": "application/json",
 		},
-		Body: `{"message": "Hello, Lambda!"}`,
-	}
-	mockEvent = events.APIGatewayProxyRequest{
+		Body: `{"user": "admin-test", "password":"admin-test", "tier": "tier1"}`,
+	}*/
+
+	/*mockEvent := events.APIGatewayProxyRequest{
+		HTTPMethod: "POST",
+		Resource:    "/addScope",
+		Headers: map[string]string{
+			"Content-Type": "application/json",
+		},
+		Body: `{"user": "admin-test", "scope": ["test.read","test.write", "admin"] }`,
+	}*/
+
+	/*mockEvent := events.APIGatewayProxyRequest{
 		HTTPMethod: "POST",
 		Resource:    "/oauth_credential",
 		Headers: map[string]string{
 			"Content-Type": "application/json",
 		},
-		Body: `{"user": "admin", "password":"admin"}`,
-	}
-	mockEvent = events.APIGatewayProxyRequest{
+		Body: `{"user": "admin-test", "password":"admin-test"}`,
+	}*/
+
+	/*mockEvent := events.APIGatewayProxyRequest{
+		HTTPMethod: "GET",
+		Resource:    "/wellKnown/1",
+		Headers: map[string]string{
+			"Content-Type": "application/json",
+		},
+	}*/
+
+	/*mockEvent := events.APIGatewayProxyRequest{
 		HTTPMethod: "GET",
 		Resource:    "/credential/{id}",
 		RequestContext: events.APIGatewayProxyRequestContext{
@@ -223,10 +248,10 @@ func main (){
 		Headers: map[string]string{
 			"Content-Type": "application/json",
 		},
-		PathParameters: map[string]string{"id": "admin-03"},
-	}
+		PathParameters: map[string]string{"id": "admin-test"},
+	}*/
 	
-	handler.LambdaHandlerRequest(ctx, mockEvent)*/
+	//handler.LambdaHandlerRequest(ctx, mockEvent)
 
 	lambda.Start(otellambda.InstrumentHandler(handler.LambdaHandlerRequest, xrayconfig.WithRecommendedOptions(tp)... ))
 }

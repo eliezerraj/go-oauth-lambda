@@ -48,6 +48,8 @@ func (l *LambdaHandler) LambdaHandlerRequest(ctx context.Context,
 				response, _ = l.lambdaRouters.GetCredential(ctx, request) // Query the scopes associated with credential
 			}else if request.Resource == "/info"{
 				response, _ = l.lambdaRouters.GetInfo(ctx)
+			}else if request.Resource == "/wellKnown/1" {
+				response, _ =  l.lambdaRouters.WellKnown(ctx, request) // Add scopes to the credential
 			}else {
 				response, _ = l.lambdaRouters.UnhandledMethod()
 			}
