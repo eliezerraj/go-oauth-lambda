@@ -126,6 +126,11 @@ func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Cr
 	if len(res_credential) == 0 {
 		return nil, erro.ErrNotFound
 	}
+	un_credential := []model.Credential{}
+	err = attributevalue.UnmarshalListOfMaps(res_credential, &un_credential)
+    if err != nil {
+		return nil, err
+	}
 
 	// Prepare ID and SK
 	id = fmt.Sprintf("USER-%s", credential.User)
@@ -147,7 +152,7 @@ func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Cr
 	}
 
 	// Set a JWT expiration date 
-	expirationTime := time.Now().Add(720 * time.Minute)
+	expirationTime := time.Now().Add(2880 * time.Minute)
 
 	newUUID := uuid.New()
 	uuidString := newUUID.String()
@@ -156,9 +161,10 @@ func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Cr
 	jwtData := &model.JwtData{	Username: credential.User,
 								Scope: credential_scope[0].Scope,
 								ISS: "go-oauth-lambda",
-								Version: "3",
+								Version: "2.0",
 								JwtId: uuidString,
 								TokenUse: "access",
+								Tier: un_credential[0].Tier,
 								RegisteredClaims: jwt.RegisteredClaims{
 									ExpiresAt: jwt.NewNumericDate(expirationTime), 	// JWT expiry time is unix milliseconds
 								},
@@ -207,7 +213,7 @@ func (w *WorkerService) RefreshToken(ctx context.Context, credential model.Crede
 		return nil, err
 	}
 	// Set a new tokens claims
-	expirationTime := time.Now().Add(60 * time.Minute)
+	expirationTime := time.Now().Add(2880 * time.Minute)
 	jwtData.ExpiresAt = jwt.NewNumericDate(expirationTime)
 	jwtData.ISS = "go-oauth-lambda-refreshed"
 

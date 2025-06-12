@@ -35,8 +35,7 @@ type Credential struct {
 	User			string	`json:"user,omitempty"`
 	Password		string	`json:"password,omitempty"`
 	Token			string 	`json:"token,omitempty"`
-	UsagePlan		string 	`json:"usage_plan,omitempty"`
-	ApiKey			string 	`json:"apikey,omitempty"`
+	Tier			string 	`json:"tier,omitempty"`
 	Updated_at  	time.Time 	`json:"updated_at,omitempty"`
 	CredentialScope	*CredentialScope `json:"credential_scope,omitempty"`
 	JwtKeySign		interface{}
@@ -47,6 +46,7 @@ type CredentialScope struct {
 	ID				string		`json:"ID"`
 	SK				string		`json:"SK"`
 	User			string		`json:"user,omitempty"`
+	Tier			string 		`json:"tier,omitempty"`
 	Scope			[]string	`json:"scope,omitempty"`
 	Updated_at  	time.Time 	`json:"updated_at,omitempty"`
 }
@@ -57,6 +57,7 @@ type JwtData struct {
 	Version		string 	`json:"version"`
 	JwtId		string 	`json:"jwt_id"`
 	Username	string 	`json:"username"`
+	Tier		string 	`json:"tier"`
 	Scope	  	[]string `json:"scope"`
 	jwt.RegisteredClaims
 }

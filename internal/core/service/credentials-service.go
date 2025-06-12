@@ -80,6 +80,7 @@ func (w *WorkerService) GetCredential(ctx context.Context, credential model.Cred
     if err != nil {
 		return nil, err
 	}
+	
 	// Prepare SK
 	sk = "SCOPE-001"
 	// Get credential from dynamo

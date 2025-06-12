@@ -1,6 +1,6 @@
 # Define environment variables
-export API_VERSION=1.1
-export POD_NAME=go-oauth-apigw-authorizerlambda
+export API_VERSION=2.0
+export POD_NAME=go-oauth-lambda
 export ENV=dev
 export OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317
 

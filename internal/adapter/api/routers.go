@@ -86,10 +86,11 @@ func (l *LambdaRouters) GetInfo(ctx context.Context) (*events.APIGatewayProxyRes
 	childLogger.Info().Str("func","GetInfo").Send()
 	
 	//trace
-	span := tracerProvider.Span(ctx, "adapter.api.Login")
+	span := tracerProvider.Span(ctx, "adapter.api.GetInfo")
 	defer span.End()
 
 	msg := "ok from lambda"
+
 	handlerResponse, err := ApiHandlerResponse(http.StatusOK,  MessageBody{Msg: &msg })
 	if err != nil {
 		return ApiHandlerResponse(http.StatusInternalServerError, MessageBody{ErrorMsg: aws.String(err.Error())})
@@ -306,6 +307,33 @@ func (l *LambdaRouters) AddScope(ctx context.Context, req events.APIGatewayProxy
 
 	//call service
 	response, err := l.workerService.AddScope(ctx, credential_scope)
+	if err != nil {
+		switch err {
+		case erro.ErrNotFound:
+			return ApiHandlerResponse(http.StatusNotFound, MessageBody{ErrorMsg: aws.String(err.Error())})
+		default:
+			return ApiHandlerResponse(http.StatusInternalServerError, MessageBody{ErrorMsg: aws.String(err.Error())})
+		}
+	}
+	
+	handlerResponse, err := ApiHandlerResponse(http.StatusOK, response)
+	if err != nil {
+		return ApiHandlerResponse(http.StatusInternalServerError, MessageBody{ErrorMsg: aws.String(err.Error())})
+	}
+
+	return handlerResponse, nil
+}
+
+// About GetCredential
+func (l *LambdaRouters) WellKnown(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+	childLogger.Info().Str("func","LambdaRouters").Send()
+
+	//trace
+	span := tracerProvider.Span(ctx, "adapter.api.WellKnown")
+	defer span.End()
+
+	//call service
+	response, err := l.workerService.WellKnown(ctx)
 	if err != nil {
 		switch err {
 		case erro.ErrNotFound:
