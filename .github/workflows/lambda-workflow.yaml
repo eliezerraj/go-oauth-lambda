@@ -20,7 +20,11 @@ env:
 defaults:
   run:
     shell: bash
-    
+
+permissions:
+  id-token: write   # Isso é necessário para solicitar o JWT
+  contents: read    # Isso é necessário para ações/checkout    
+
 jobs:
   setup-environment:
     uses: ./.github/workflows/setup-environment.yaml
@@ -101,19 +105,33 @@ jobs:
         echo "Recursive file list:"
         ls -R build
 
-    - name: Configure AWS Credentials
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-        AWS_REGION: ${{ needs.setup-environment.outputs.AWS_REGION }}
-        BUCKET_S3_LAMBDA_DEPLOY: ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: ${{ needs.setup-environment.outputs.AWS_REGION }}
+    - name: Configure AWS credentials - OIDC
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::908671954593:role/oidc-gitaction
+          aws-region: ${{ github.event.inputs.REGION }}
+
+    - name: Sts GetCallerIdentity
+      run: |
+        aws sts get-caller-identity
+
+    #- name: Bucket-setup
+    #  env: 
+    #    BUCKET_S3_LAMBDA_DEPLOY: ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}
+
+    #- name: Configure AWS Credentials
+    #  env:
+    #    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #    AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+    #    AWS_REGION: ${{ needs.setup-environment.outputs.AWS_REGION }}
+    #    BUCKET_S3_LAMBDA_DEPLOY: ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}
+    #  uses: aws-actions/configure-aws-credentials@v2
+    #  with:
+    #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #    aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+    #    aws-region: ${{ needs.setup-environment.outputs.AWS_REGION }}
 
     - name: Upload collector.yaml to S3
       run: aws s3 cp ./build/collector.yaml ${{ needs.setup-environment.outputs.BUCKET_S3_LAMBDA_DEPLOY }}/collector.yaml
