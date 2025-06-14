@@ -109,7 +109,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v2
       with:
         role-to-assume: arn:aws:iam::908671954593:role/oidc-gitaction
-        aws-region: ${{ github.event.inputs.REGION }}
+        aws-region: ${{ needs.setup-environment.outputs.AWS_REGION }}
 
     - name: Sts GetCallerIdentity
       run: |
