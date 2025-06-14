@@ -106,10 +106,11 @@ jobs:
         ls -R build
 
     - name: Configure AWS credentials - OIDC
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::908671954593:role/oidc-gitaction
-          aws-region: ${{ github.event.inputs.REGION }}
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        role-to-assume: arn:aws:iam::908671954593:role/oidc-gitaction
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ github.event.inputs.REGION }}
 
     - name: Sts GetCallerIdentity
       run: |
