@@ -36,7 +36,7 @@ type Credential struct {
 	Password		string	`json:"password,omitempty"`
 	Token			string 	`json:"token,omitempty"`
 	Tier			string 	`json:"tier,omitempty"`
-	ApiKey			string 	`json:"api_access_key,omitempty"`
+	ApiAccessKey	string 	`json:"api_access_key,omitempty"`
 	Updated_at  	time.Time 	`json:"updated_at,omitempty"`
 	CredentialScope	*CredentialScope `json:"credential_scope,omitempty"`
 	JwtKeySign		interface{}
@@ -53,14 +53,14 @@ type CredentialScope struct {
 }
 
 type JwtData struct {
-	TokenUse	string 	`json:"token_use"`
-	ISS			string 	`json:"iss"`
-	Version		string 	`json:"version"`
-	JwtId		string 	`json:"jwt_id"`
-	Username	string 	`json:"username"`
-	Tier		string 	`json:"tier"`
-	ApiKey		string 	`json:"api_access_key`
-	Scope	  	[]string `json:"scope"`
+	TokenUse		string 	`json:"token_use"`
+	ISS				string 	`json:"iss"`
+	Version			string 	`json:"version"`
+	JwtId			string 	`json:"jwt_id"`
+	Username		string 	`json:"username"`
+	Tier			string 	`json:"tier"`
+	ApiAccessKey	string 	`json:"api_access_key`
+	Scope	  		[]string `json:"scope"`
 	jwt.RegisteredClaims
 }
 
