@@ -47,7 +47,6 @@ type CredentialScope struct {
 	ID				string		`json:"ID"`
 	SK				string		`json:"SK"`
 	User			string		`json:"user,omitempty"`
-	Tier			string 		`json:"tier,omitempty"`
 	Scope			[]string	`json:"scope,omitempty"`
 	Updated_at  	time.Time 	`json:"updated_at,omitempty"`
 }
