@@ -165,6 +165,7 @@ func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Cr
 								JwtId: uuidString,
 								TokenUse: "access",
 								Tier: un_credential[0].Tier,
+								ApiAccessKey: un_credential[0].ApiAccessKey,
 								RegisteredClaims: jwt.RegisteredClaims{
 									ExpiresAt: jwt.NewNumericDate(expirationTime), 	// JWT expiry time is unix milliseconds
 								},
