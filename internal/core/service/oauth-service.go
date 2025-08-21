@@ -161,7 +161,7 @@ func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Cr
 	jwtData := &model.JwtData{	Username: credential.User,
 								Scope: credential_scope[0].Scope,
 								ISS: "go-oauth-lambda",
-								Version: "2.0",
+								Version: "2.1",
 								JwtId: uuidString,
 								TokenUse: "access",
 								Tier: un_credential[0].Tier,
