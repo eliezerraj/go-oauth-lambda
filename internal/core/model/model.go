@@ -58,7 +58,7 @@ type JwtData struct {
 	JwtId			string 	`json:"jwt_id"`
 	Username		string 	`json:"username"`
 	Tier			string 	`json:"tier"`
-	ApiAccessKey	string 	`json:"api_access_key`
+	ApiAccessKey	string 	`json:"api_access_key"`
 	Scope	  		[]string `json:"scope"`
 	jwt.RegisteredClaims
 }
