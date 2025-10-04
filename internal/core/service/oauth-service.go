@@ -132,6 +132,11 @@ func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Cr
 		return nil, err
 	}
 
+	// Check Password (NAIVE)
+	if un_credential.Password != credential.Password{
+		return nil, err
+	}
+
 	// Prepare ID and SK
 	id = fmt.Sprintf("USER-%s", credential.User)
 	sk = "SCOPE-001"
@@ -152,7 +157,7 @@ func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Cr
 	}
 
 	// Set a JWT expiration date 
-	expirationTime := time.Now().Add(2880 * time.Minute)
+	expirationTime := time.Now().Add(7200 * time.Minute) // 5 days
 
 	newUUID := uuid.New()
 	uuidString := newUUID.String()
@@ -161,7 +166,7 @@ func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Cr
 	jwtData := &model.JwtData{	Username: credential.User,
 								Scope: credential_scope[0].Scope,
 								ISS: "go-oauth-lambda",
-								Version: "2.1",
+								Version: "2.2",
 								JwtId: uuidString,
 								TokenUse: "access",
 								Tier: un_credential[0].Tier,
