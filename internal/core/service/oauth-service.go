@@ -133,8 +133,8 @@ func (w *WorkerService) OAUTHCredential(ctx context.Context, credential model.Cr
 	}
 
 	// Check Password (NAIVE)
-	if un_credential.Password != credential.Password{
-		return nil, err
+	if credential.Password != un_credential[0].Password {
+		return nil, erro.ErrCredentials
 	}
 
 	// Prepare ID and SK
