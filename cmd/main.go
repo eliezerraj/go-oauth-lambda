@@ -228,7 +228,7 @@ func main (){
 		Headers: map[string]string{
 			"Content-Type": "application/json",
 		},
-		Body: `{"user": "admin-test", "password":"admin-test"}`,
+		Body: `{"user": "admin", "password":"admin222222"}`,
 	}*/
 
 	/*mockEvent := events.APIGatewayProxyRequest{

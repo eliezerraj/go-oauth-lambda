@@ -159,11 +159,11 @@ arn:aws:lambda:us-east-2:901920570463:layer:aws-otel-collector-amd64-ver-0-90-1:
       {
          "httpMethod": "POST",
          "resource": "/refreshToken",
-         "body": "{\"token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl91c2UiOiJhY2Nlc3MtcnNhIiwiaXNzIjoibGFtYmRhLWdvLWF1dGVudGljYXRpb24iLCJ2ZXJzaW9uIjoiMiIsImp3dF9pZCI6IjkxNTNkNGU3LTljZWItNDRjMC1iZGRjLTM3ZWUyMzM0NzgzOCIsInVzZXJuYW1lIjoiYWRtaW4iLCJzY29wZSI6WyJhZG1pbiJdLCJleHAiOjE3MzM4MTgxNzF9.X_vKruOsgZZEBHJsz5OEzSIPDtpR6xW_824zJDWYsiZ8FMKHsGwWpsbYbqwJgOCnPlqX2_cDbNg89BCOXBiaP8oE_H97Z-PMAQhnX8NPel4rR893NvFkBbQwRI-IHu4oU7Jw-pQd7gbjsaz_b-HYPdsBH1xXe2GZpRcAOVSYJOAx6S47QK2F0Vy6xExKQcFEEvLJdf4uXLL5XzMlIrguC8SM6ObsDWiWr8iJa5bh9fYN4GjZ_n2ssjYrFnX-C3Q9ewCdquBZcSKoDYkR0Hjo98KHJpxylLByW9osiXbFdP4jhGj1eMvTYK6POg5Qfnz1LpGO3g30q7vxBN9fhn4NDQ\"}"
+         "body": "{\"token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.e......\"}"
       }
 
       {
          "httpMethod": "POST",
          "resource": "/tokenValidation",
-         "body": "{\"token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl91c2UiOiJhY2Nlc3MtcnNhIiwiaXNzIjoibGFtYmRhLWdvLWF1dGVudGljYXRpb24iLCJ2ZXJzaW9uIjoiMiIsImp3dF9pZCI6IjRlMjFmYmJjLWNhOGYtNDczMi05YjJlLTE0Nzc3NTIwMDViYyIsInVzZXJuYW1lIjoiYWRtaW4iLCJzY29wZSI6WyJhZG1pbiJdLCJleHAiOjE3MzM4MTU4MTl9.AZXgxpidbeTRoLLFQCIZW16izopIWsUuO7EYu4V4JZ_byqHKftbfrockSh820u4DOwmnRufCjoe_t7akB9RPUyrXYBCunQipQy9TQhyvBDRX0qmv4krM7C_zXCyh8gdeaJG67p1bOctItJp6KCfANqd_TgITwB86luuzHHqpv5FMfg5AIQS15jXzSClb6D3_0hurooWT9WR2nIY1eByYl-QrcRvgem_RyGmSwja_ZiZd31j0MCoueRZnUltAhXsNKgtqZGq2uaU_i0GDlDme707kIk8QJLPZqOSmbYRnBFA5bWtIXQPtGRkMZlNknxS1yKN92pGsZlj4ORJFuiZ1Bg\"}"
+         "body": "{\"token\":\"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.e....\"}"
       }
